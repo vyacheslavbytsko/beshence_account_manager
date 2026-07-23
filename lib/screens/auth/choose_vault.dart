@@ -17,6 +17,30 @@ class ChooseVaultScreen extends StatefulWidget {
 }
 
 class _ChooseVaultScreenState extends State<ChooseVaultScreen> {
+  late TextEditingController _controller;
+  bool _vaultsLoaded = false;
+  bool _showCreateVaultTextField = false;
+  List<BeshenceRemoteVault> _vaults = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _vaults = await Beshence.getBank(widget.bankId)!.getVaults();
+      setState(() {
+        _vaultsLoaded = true;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return CenteredScaffold(
@@ -52,90 +76,76 @@ class _ChooseVaultScreenState extends State<ChooseVaultScreen> {
               )
           ),
           SizedBox(height: 24,),
-          FutureBuilder(future: Beshence.getBank(widget.bankId)!.getVaults(), builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Text("Error: ${snapshot.error}");
-            } else {
-              List<BeshenceRemoteVault> vaults = snapshot.requireData;
-              return Column(
-                  children: [
-                    ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: vaults.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            leading: Icon(Icons.dataset_outlined),
-                            title: Text(vaults[index].name),
-                            onTap: () {
-                              /*Beshence.selectedAccount!.addVault(
+          if(!_vaultsLoaded)
+            Center(child: CircularProgressIndicator())
+          else
+            ListView.builder(
+                shrinkWrap: true,
+                itemCount: _vaults.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    leading: Icon(Icons.dataset_outlined),
+                    title: Text(_vaults[index].name),
+                    onTap: () {
+                      /*Beshence.selectedAccount!.addVault(
                                 bankId: widget.bankId,
                                 vaultId: vaults[index].id,
                                 priority: 1024
                               );
                               Navigator.pop(context);*/                            },
-                          );
-                        }
+                  );
+                }
+            ),
+          SizedBox(height: 12,),
+          if(!_showCreateVaultTextField)
+            Row(
+              children: [
+                SizedBox(height: 48,),
+                TextButton.icon(
+                  onPressed: () => setState(() {
+                    _showCreateVaultTextField = true;
+                  }),
+                  icon: Icon(Icons.add),
+                  label: Text("Create Vault"),
+                )
+              ],
+            )
+          else
+            Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    autofocus: true,
+                    decoration: InputDecoration(
+                      labelText: 'New Vault\'s name',
                     ),
-                  ]
-              );
-            }
-          }),
+                    controller: _controller,
+                  ),
+                ),
+                SizedBox(width: 16,),
+                IconButton(
+                  icon: const Icon(Icons.cancel),
+                  onPressed: () => setState(() {
+                    _controller.text = "";
+                    _showCreateVaultTextField = false;
+                  }),
+                ),
+                SizedBox(width: 16,),
+                FilledButton.icon(
+                  iconAlignment: .end,
+                  icon: const Icon(Icons.arrow_forward),
+                  onPressed: () async {
+                    await Beshence.getBank(widget.bankId)!.createVault(_controller.text);
+                    var vaults = await Beshence.getBank(widget.bankId)!.getVaults();
+                    setState(() {
+                      _vaults = vaults;
+                    });
+                  }, label: Text("Create"),
+                ),
+              ],
+            )
         ],
       ),
     );
   }
 }
-
-/*
-                            List<Map<String, String>> vaults = (await Beshence.getVaultsOfBank(
-                                                              address: _bankAddressController.text,
-                                                              accessToken: loginBankResponse.accessToken
-                                                          )).vaults;
-
-                                                          Navigator.pop(context);
-                                                          showDialog(
-                                                            useSafeArea: true,
-                                                            requestFocus: true,
-                                                            barrierDismissible: false,
-                                                            context: context,
-                                                            builder: (context) => BackdropFilter(
-                                                                filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-                                                                child: AlertDialog.adaptive(
-                                                                    content: Container(
-                                                                      width: double.maxFinite,
-                                                                      child: Column(
-                                                                        mainAxisSize: MainAxisSize.min,
-                                                                        children: [
-                                                                          Text("Choose vault"),
-                                                                          // TODO: add priority text field
-                                                                          Expanded(
-                                                                            child: ListView.builder(
-                                                                                shrinkWrap: true,
-                                                                                itemCount: vaults.length,
-                                                                                itemBuilder: (context, index) {
-                                                                                  return ListTile(
-                                                                                    title: Text(vaults[index]['name']!),
-                                                                                    onTap: () {
-                                                                                      Beshence.selectedAccount!.addVault(
-                                                                                        address: _bankAddressController.text,
-                                                                                        vaultId: vaults[index]['id']!,
-                                                                                        bankId: pingBankResponse.bankId,
-                                                                                        priority: 1024,
-                                                                                        refreshToken: loginBankResponse.refreshToken,
-                                                                                        accessToken: loginBankResponse.accessToken,
-                                                                                      );
-                                                                                      Navigator.pop(context);
-                                                                                    },
-                                                                                  );
-                                                                                }
-                                                                            ),
-                                                                          )
-                                                                        ],
-                                                                      ),
-                                                                    )
-                                                                )
-                                                            ),
-                                                          );
-                             */
