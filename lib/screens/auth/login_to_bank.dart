@@ -78,7 +78,7 @@ class _LoginToBankScreenState extends State<LoginToBankScreen> {
                       overflowDirection: .up,
                       children: [
                         if(widget.newAccount) TextButton(
-                          onPressed: !_enabled ? null : () => context.push("/register/register_in_bank"),
+                          onPressed: !_enabled ? null : () => context.push("/register/register_in_bank?bank_id=${widget.bankId}"),
                           child: const Text('Register instead'),
                         ),
                         FilledButton(

@@ -3,6 +3,7 @@ import 'package:account_manager/screens/auth/choose_custom_bank.dart';
 import 'package:account_manager/screens/auth/choose_existing_bank.dart';
 import 'package:account_manager/screens/auth/choose_vault.dart';
 import 'package:account_manager/screens/auth/login_to_bank.dart';
+import 'package:account_manager/screens/auth/register_in_bank.dart';
 import 'package:account_manager/screens/welcome.dart';
 import 'package:beshence_sdk_flutter/beshence_sdk_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -35,6 +36,7 @@ GoRouter router = GoRouter(
           GoRoute(path: "/choose_bank", builder: (context, state) => const ChooseBankScreen(newAccount: true)),
           GoRoute(path: "/choose_custom_bank", builder: (context, state) => const ChooseCustomBankScreen(newAccount: true)),
           GoRoute(path: "/choose_existing_bank", builder: (context, state) => const ChooseExistingBankScreen(newAccount: true)),
+          GoRoute(path: "/register_in_bank", builder: (context, state) => RegisterInBankScreen(bankId: state.uri.queryParameters['bank_id']!)),
           GoRoute(path: "/login_to_bank", builder: (context, state) => LoginToBankScreen(newAccount: true, bankId: state.uri.queryParameters['bank_id']!)),
           GoRoute(path: "/choose_vault", builder: (context, state) => ChooseVaultScreen(newAccount: true, bankId: state.uri.queryParameters['bank_id']!)),
         ]

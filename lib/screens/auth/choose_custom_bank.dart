@@ -101,5 +101,5 @@ class _ChooseCustomBankScreenState extends State<ChooseCustomBankScreen> {
 
 Future<void> processBeshenceBank(BuildContext context, String id, bool newAccount) async {
   await Beshence.pingBank(bankId: id);
-  context.push("${newAccount?"/register":"/login"}/login_to_bank?bank_id=$id");
+  context.push("${newAccount?"/register/register_in_bank":"/login/login_to_bank"}?bank_id=$id");
 }
