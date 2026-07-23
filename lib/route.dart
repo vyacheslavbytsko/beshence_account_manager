@@ -1,0 +1,58 @@
+import 'package:account_manager/screens/auth/choose_bank.dart';
+import 'package:account_manager/screens/auth/choose_custom_bank.dart';
+import 'package:account_manager/screens/auth/login_to_bank.dart';
+import 'package:account_manager/screens/auth/use_vault.dart';
+import 'package:account_manager/screens/welcome.dart';
+import 'package:beshence_sdk_flutter/beshence_sdk_flutter.dart';
+import 'package:go_router/go_router.dart';
+
+GoRouter router = GoRouter(
+  routes: [
+    GoRoute(
+      path: "/welcome",
+      builder: (context, state) => const WelcomeScreen(),
+    ),
+    /*GoRoute(
+      path: '/',
+      builder: (context, state) => const HomeScreen(),
+    ),*/
+    GoRoute(
+        path: "/login",
+        redirect: (context, state) => state.uri.path == "/login" ? "/login/choose_bank" : null,
+        routes: [
+          GoRoute(path: "/choose_bank", builder: (context, state) => const ChooseBankScreen(newAccount: false)),
+          GoRoute(path: "/choose_custom_bank", builder: (context, state) => const ChooseCustomBankScreen(newAccount: false)),
+          GoRoute(path: "/login_to_bank", builder: (context, state) => LoginToBankScreen(newAccount: false, bankId: state.uri.queryParameters['id']!))
+        ]
+    ),
+    GoRoute(
+        path: "/register",
+        redirect: (context, state) => state.uri.path == "/register" ? "/register/use_vault" : null,
+        routes: [
+          GoRoute(path: "/use_vault", builder: (context, state) => const UseVaultScreen()),
+          GoRoute(path: "/choose_bank", builder: (context, state) => const ChooseBankScreen(newAccount: true)),
+          GoRoute(path: "/choose_custom_bank", builder: (context, state) => const ChooseCustomBankScreen(newAccount: true)),
+          GoRoute(path: "/login_to_bank", builder: (context, state) => LoginToBankScreen(newAccount: true, bankId: state.uri.queryParameters['id']!))
+        ]
+    ),
+  ],
+  redirect: (context, state) {
+    final selectedAccount = Beshence.selectedAccount;
+    final location = state.uri.path;
+
+    if (selectedAccount == null) {
+      if (location != '/welcome' && !location.startsWith('/login') && !location.startsWith('/register')) {
+        return "/welcome";
+      }
+    } else {
+      if (location == '/welcome') {
+        return "/";
+      }
+    }
+
+    if(location == "/login") return "/login/choose_bank";
+    if(location == "/register") return "/register/use_vault";
+
+    return null;
+  },
+);
