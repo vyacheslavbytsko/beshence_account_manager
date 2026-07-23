@@ -43,7 +43,7 @@ class _LoginToBankScreenState extends State<LoginToBankScreen> {
           SizedBox(height: 24,),
           Text("Login to Bank", style: TextTheme.of(context).headlineLarge,),
           SizedBox(height: 24,),
-          FutureBuilder(future: Beshence.pingBank(id: widget.bankId), builder: (context, snapshot) {
+          FutureBuilder(future: Beshence.pingBank(bankId: widget.bankId), builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
@@ -70,33 +70,43 @@ class _LoginToBankScreenState extends State<LoginToBankScreen> {
                       enabled: _enabled,
                     ),
                     SizedBox(height: 24,),
+                    OverflowBar(
+                      alignment: widget.newAccount ? .spaceBetween : .end,
+                      overflowAlignment: .end,
+                      spacing: 16,
+                      overflowSpacing: 0,
+                      overflowDirection: .up,
+                      children: [
+                        if(widget.newAccount) TextButton(
+                          onPressed: !_enabled ? null : () => context.push("/register/register_in_bank"),
+                          child: const Text('Register instead'),
+                        ),
+                        FilledButton(
+                          onPressed: !_enabled ? null : () async {
+                            setState(() {
+                              _enabled = false;
+                            });
+
+                            await Beshence.loginToBank(
+                                bankId: widget.bankId,
+                                username: _usernameController.text,
+                                password: _passwordController.text);
+
+                            context.go("${widget.newAccount ? "/register" : "/login"}/choose_vault?bank_id=${widget.bankId}");
+
+                            setState(() {
+                              _enabled = true;
+                            });
+                          },
+                          child: const Text('Log in'),
+                        ),
+                      ],
+                    )
                   ]
                 ]
               );
             }
           }),
-          SizedBox(height: 24,),
-          OverflowBar(
-            alignment: widget.newAccount ? .spaceBetween : .end,
-            overflowAlignment: .end,
-            spacing: 16,
-            overflowSpacing: 0,
-            overflowDirection: .up,
-            children: [
-              if(widget.newAccount) TextButton(
-                onPressed: !_enabled ? null : () => context.push("/register/register_in_bank"),
-                child: const Text('Register instead'),
-              ),
-              FilledButton(
-                onPressed: !_enabled ? null : () {
-                  setState(() {
-                    _enabled = false;
-                  });
-                },
-                child: const Text('Log in'),
-              ),
-            ],
-          )
         ],
       ),
     );
