@@ -4,19 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../misc.dart';
+import 'choose_custom_bank.dart';
 import 'modals.dart';
 
-class ChooseCustomBankScreen extends StatefulWidget {
+class ChooseExistingBankScreen extends StatefulWidget {
   final bool newAccount;
 
-  const ChooseCustomBankScreen({super.key, required this.newAccount});
+  const ChooseExistingBankScreen({super.key, required this.newAccount});
 
   @override
-  State<StatefulWidget> createState() => _ChooseCustomBankScreenState();
+  State<StatefulWidget> createState() => _ChooseExistingBankScreenState();
 
 }
 
-class _ChooseCustomBankScreenState extends State<ChooseCustomBankScreen> {
+class _ChooseExistingBankScreenState extends State<ChooseExistingBankScreen> {
   late TextEditingController _controller;
 
   @override
@@ -37,13 +38,14 @@ class _ChooseCustomBankScreenState extends State<ChooseCustomBankScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<BeshenceBank> banks = Beshence.banks;
     return CenteredScaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(Icons.edit_outlined, size: 48, color: TextTheme.of(context).headlineLarge?.color,),
+          Icon(Icons.dns_outlined, size: 48, color: TextTheme.of(context).headlineLarge?.color,),
           SizedBox(height: 24,),
-          Text("Choose custom Bank", style: TextTheme.of(context).headlineLarge,),
+          Text("Choose existing Bank", style: TextTheme.of(context).headlineLarge,),
           SizedBox(height: 24,),
           RichText(
               text: TextSpan(
@@ -71,35 +73,24 @@ class _ChooseCustomBankScreenState extends State<ChooseCustomBankScreen> {
               )
           ),
           SizedBox(height: 24,),
-          TextField(
-            controller: _controller,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              labelText: 'Bank ID',
-            ),
-            onSubmitted: (String value) => pingBankAndContinue(),
-          ),
-          SizedBox(height: 24,),
-          OverflowBar(
-            alignment: .end,
-            overflowAlignment: .end,
-            spacing: 16,
-            overflowSpacing: 0,
-            overflowDirection: .up,
-            children: [
-              FilledButton(
-                onPressed: () => pingBankAndContinue(),
-                child: const Text('Continue'),
-              ),
-            ],
+          Column(
+              children: [
+                ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: banks.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        leading: Icon(Icons.dns_outlined),
+                        title: Text(banks[index].id),
+                        onTap: () => context.push(
+                            "${widget.newAccount?"/register":"/login"}/login_to_bank?bank_id=${banks[index].id}"),
+                      );
+                    }
+                ),
+              ]
           )
         ],
       ),
     );
   }
-}
-
-Future<void> processBeshenceBank(BuildContext context, String id, bool newAccount) async {
-  await Beshence.pingBank(bankId: id);
-  context.push("${newAccount?"/register":"/login"}/login_to_bank?bank_id=$id");
 }

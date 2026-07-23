@@ -86,7 +86,7 @@ class _ChooseBankScreenState extends State<ChooseBankScreen> {
             title: Text("Choose existing Bank"),
             subtitle: Text("Select Bank already used in this app"),
             trailing: Icon(Icons.arrow_forward),
-            onTap: () => {},
+            onTap: () => context.push("${widget.newAccount? "/register" : "/login"}/choose_existing_bank"),
           ),
         ],
       ),
