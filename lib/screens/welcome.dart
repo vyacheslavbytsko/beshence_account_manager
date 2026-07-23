@@ -37,7 +37,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               'To get started, register new Beshence Account or log in to existing one.', style: Theme.of(context).textTheme.bodyLarge,),
             actionsOverflowButtonSpacing: 8.0,
             actionsAlignment: .spaceBetween,
-            icon: Icon(Icons.sticky_note_2_outlined, size: 36,),
+            icon: Icon(Icons.account_circle_outlined, size: 36,),
             actionsOverflowDirection: .up,
             actions: [
               TextButton(
