@@ -1,3 +1,4 @@
+import 'package:beshence_sdk_flutter/beshence_sdk_flutter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -81,10 +82,10 @@ class _ChooseBankScreenState extends State<ChooseBankScreen> {
           ),
           Divider(),
           ListTile(
-            enabled: _enabled,
+            enabled: Beshence.banks.isNotEmpty && _enabled,
             leading: Icon(Icons.select_all_outlined),
             title: Text("Choose existing Bank"),
-            subtitle: Text("Select Bank already used in this app"),
+            subtitle: Text(Beshence.banks.isEmpty ? "No Banks added on this device" : "Select Bank already added on this device"),
             trailing: Icon(Icons.arrow_forward),
             onTap: () => context.push("${widget.newAccount? "/register" : "/login"}/choose_existing_bank"),
           ),
