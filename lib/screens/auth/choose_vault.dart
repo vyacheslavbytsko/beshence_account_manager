@@ -88,12 +88,41 @@ class _ChooseVaultScreenState extends State<ChooseVaultScreen> {
                     leading: Icon(Icons.dataset_outlined),
                     title: Text(_vaults[index].name),
                     onTap: () async {
+                      var accountIdAttachedToVault = await Beshence.getBank(widget.bankId)!.getAccountIdAttachedToVault(_vaults[index].id);
+
                       if(widget.newAccount) { // register
+                        if(accountIdAttachedToVault != null) {
+                          showDialog(context: context, builder: (context) => AlertDialog.adaptive(
+                            title: Text("Cannot use this Vault"),
+                            content: Text("This Vault is used by another Beshence Account."),
+                            actions: [
+                              TextButton(
+                                onPressed: () => context.pop(), child: Text("Ok"),
+                              )
+                            ],
+                          ));
+                          return;
+                        }
                         BeshenceAccount account = await Beshence.createAccount();
                         account.addVault(bankId: widget.bankId, vaultId: _vaults[index].id, priority: 1024);
                         context.go("/");
                       } else { // login
-
+                        if(accountIdAttachedToVault == null) {
+                          showDialog(context: context, builder: (context) => AlertDialog.adaptive(
+                            title: Text("Cannot use this Vault"),
+                            content: Text("We could not find Beshence Account which use this Vault."),
+                            actions: [
+                              TextButton(
+                                onPressed: () => context.pop(), child: Text("Ok"),
+                              )
+                            ],
+                          ));
+                          return;
+                        }
+                        BeshenceAccount account = await Beshence.createAccount(id: accountIdAttachedToVault, initAccountEvent: false);
+                        account.addVault(bankId: widget.bankId, vaultId: _vaults[index].id, priority: 0, addVaultEvent: false);
+                        account.createChain("main");
+                        context.go("/");
                       }
                     },
                   );
@@ -142,6 +171,8 @@ class _ChooseVaultScreenState extends State<ChooseVaultScreen> {
                     var vaults = await Beshence.getBank(widget.bankId)!.getVaults();
                     setState(() {
                       _vaults = vaults;
+                      _controller.text = "";
+                      _showCreateVaultTextField = false;
                     });
                   }, label: Text("Create"),
                 ),
