@@ -83,7 +83,7 @@ class _ChooseExistingBankScreenState extends State<ChooseExistingBankScreen> {
                         leading: Icon(Icons.dns_outlined),
                         title: Text(banks[index].id),
                         onTap: () => context.push(
-                            "${widget.newAccount?"/register":"/login"}/login_to_bank?bank_id=${banks[index].id}"),
+                            "${widget.newAccount?"/register":"/login"}/choose_vault?bank_id=${banks[index].id}"),
                       );
                     }
                 ),
