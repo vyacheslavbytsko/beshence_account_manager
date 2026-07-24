@@ -1,6 +1,7 @@
 import 'package:beshence_sdk_flutter/beshence_sdk_flutter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../misc.dart';
 import 'modals.dart';
@@ -86,13 +87,15 @@ class _ChooseVaultScreenState extends State<ChooseVaultScreen> {
                   return ListTile(
                     leading: Icon(Icons.dataset_outlined),
                     title: Text(_vaults[index].name),
-                    onTap: () {
-                      /*Beshence.selectedAccount!.addVault(
-                                bankId: widget.bankId,
-                                vaultId: vaults[index].id,
-                                priority: 1024
-                              );
-                              Navigator.pop(context);*/                            },
+                    onTap: () async {
+                      if(widget.newAccount) { // register
+                        BeshenceAccount account = await Beshence.createAccount();
+                        account.addVault(bankId: widget.bankId, vaultId: _vaults[index].id, priority: 1024);
+                        context.go("/");
+                      } else { // login
+
+                      }
+                    },
                   );
                 }
             ),

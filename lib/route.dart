@@ -4,6 +4,7 @@ import 'package:account_manager/screens/auth/choose_existing_bank.dart';
 import 'package:account_manager/screens/auth/choose_vault.dart';
 import 'package:account_manager/screens/auth/login_to_bank.dart';
 import 'package:account_manager/screens/auth/register_in_bank.dart';
+import 'package:account_manager/screens/home.dart';
 import 'package:account_manager/screens/welcome.dart';
 import 'package:beshence_sdk_flutter/beshence_sdk_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -14,10 +15,10 @@ GoRouter router = GoRouter(
       path: "/welcome",
       builder: (context, state) => const WelcomeScreen(),
     ),
-    /*GoRoute(
+    GoRoute(
       path: '/',
       builder: (context, state) => const HomeScreen(),
-    ),*/
+    ),
     GoRoute(
         path: "/login",
         redirect: (context, state) => state.uri.path == "/login" ? "/login/choose_bank" : null,
