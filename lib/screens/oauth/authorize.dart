@@ -15,6 +15,15 @@ class OauthAuthorizeScreen extends StatefulWidget {
 
 class _OauthAuthorizeScreenState extends State<OauthAuthorizeScreen> {
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      BeshenceDaemon.of(Beshence.selectedAccount!).startDaemon();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CenteredScaffold(
       body: Column(
@@ -38,7 +47,6 @@ class _OauthAuthorizeScreenState extends State<OauthAuthorizeScreen> {
                   Beshence.selectedAccount!.issueToken(
                     tokenId: tokenId,
                     scope: widget.queryParameters["scope"]!);
-                  BeshenceDaemon.of(Beshence.selectedAccount!).startDaemon();
                 },
                 child: const Text('Continue'),
               ),
