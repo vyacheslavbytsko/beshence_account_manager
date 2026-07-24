@@ -1,3 +1,4 @@
+import 'package:account_manager/misc.dart';
 import 'package:account_manager/screens/auth/choose_bank.dart';
 import 'package:account_manager/screens/auth/choose_custom_bank.dart';
 import 'package:account_manager/screens/auth/choose_existing_bank.dart';
@@ -49,6 +50,8 @@ GoRouter router = GoRouter(
 
     if (selectedAccount == null) {
       if (location != '/welcome' && !location.startsWith('/login') && !location.startsWith('/register')) {
+        // preserve location
+        redirectToAfterLoggingIn = location;
         return "/welcome";
       }
     } else {

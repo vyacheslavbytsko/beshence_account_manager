@@ -10,6 +10,8 @@ bool isLandscape(BuildContext context) {
   return MediaQuery.widthOf(context) > 640;
 }
 
+String? redirectToAfterLoggingIn;
+
 class CenteredScaffold extends StatelessWidget {
   final Widget body;
 

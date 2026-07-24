@@ -105,7 +105,7 @@ class _ChooseVaultScreenState extends State<ChooseVaultScreen> {
                         }
                         BeshenceAccount account = await Beshence.createAccount();
                         account.addVault(bankId: widget.bankId, vaultId: _vaults[index].id, priority: 1024);
-                        context.go("/");
+                        context.go(redirectToAfterLoggingIn ?? "/");
                       } else { // login
                         if(accountIdAttachedToVault == null) {
                           showDialog(context: context, builder: (context) => AlertDialog.adaptive(
@@ -122,7 +122,7 @@ class _ChooseVaultScreenState extends State<ChooseVaultScreen> {
                         BeshenceAccount account = await Beshence.createAccount(id: accountIdAttachedToVault, initAccountEvent: false);
                         account.addVault(bankId: widget.bankId, vaultId: _vaults[index].id, priority: 0, addVaultEvent: false);
                         account.createChain("main");
-                        context.go("/");
+                        context.go(redirectToAfterLoggingIn ?? "/");
                       }
                     },
                   );
