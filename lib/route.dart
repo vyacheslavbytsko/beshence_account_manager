@@ -6,6 +6,7 @@ import 'package:account_manager/screens/auth/choose_vault.dart';
 import 'package:account_manager/screens/auth/login_to_bank.dart';
 import 'package:account_manager/screens/auth/register_in_bank.dart';
 import 'package:account_manager/screens/home.dart';
+import 'package:account_manager/screens/oauth/authorize.dart';
 import 'package:account_manager/screens/welcome.dart';
 import 'package:beshence_sdk_flutter/beshence_sdk_flutter.dart';
 import 'package:go_router/go_router.dart';
@@ -19,6 +20,10 @@ GoRouter router = GoRouter(
     GoRoute(
       path: '/',
       builder: (context, state) => const HomeScreen(),
+    ),
+    GoRoute(
+      path: '/oauth/authorize',
+      builder: (context, state) => OauthAuthorizeScreen(queryParameters: state.uri.queryParameters),
     ),
     GoRoute(
         path: "/login",
