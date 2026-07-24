@@ -38,6 +38,7 @@ class _OauthAuthorizeScreenState extends State<OauthAuthorizeScreen> {
                   Beshence.selectedAccount!.issueToken(
                     tokenId: tokenId,
                     scope: widget.queryParameters["scope"]!);
+                  BeshenceDaemon.of(Beshence.selectedAccount!).startDaemon();
                 },
                 child: const Text('Continue'),
               ),
