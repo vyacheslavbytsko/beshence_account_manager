@@ -66,7 +66,9 @@ class _ChooseBankScreenState extends State<ChooseBankScreen> {
               setState(() {
                 _enabled = false;
               });
-              await processBeshenceBank(context, "tikhonjej77pxaklnhh33tbyloqfhgwehr4cbc4drxfba5mqsx3q", widget.newAccount);
+              try {
+                await processBeshenceBank(context, "tikhonjej77pxaklnhh33tbyloqfhgwehr4cbc4drxfba5mqsx3q", widget.newAccount);
+              } catch(e) {}
               setState(() {
                 _enabled = true;
               });

@@ -1,3 +1,4 @@
+import 'package:beshence_sdk_flutter/beshence_sdk_flutter.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -8,6 +9,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      BeshenceDaemon.of(Beshence.selectedAccount!).startDaemon();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
